@@ -28,8 +28,8 @@
 				displayDays: 7,
 				elecMedium: 10,
 				elecHigh: 20,
-				gasMedium: 0.5,
-				gasHigh: 1,
+				gasMedium: 5,
+				gasHigh: 6,
 				decimalPlaces: 1,
 				showUpdateTime: true;
 				updateInterval: 60000*60,
@@ -51,12 +51,12 @@ The following config.js properties can be configured.
 | 'displayDays' | '7' | The number of days of historical energy usage to display |
 | 'elecMedium' | '10' | kWh values over this amount will be displayed in Orange |
 | 'elecHigh' | '20' | kWh values over this amount will be displayed in Red |
-| 'gasMedium' | '0.5' | kWh values over this amount will be displayed in Orange |
-| 'gasHigh' | '1' | kWh values over this amount will be displayed in Red |
+| 'gasMedium' | '5' | kWh values over this amount will be displayed in Orange |
+| 'gasHigh' | '6' | kWh values over this amount will be displayed in Red |
 | 'decimalPlaces' | '1' | round all kWh values to this number of decimal places |
 | 'showUpdateTime' | 'true' | true or false, to display the time the energy usage figures were last updated |
 | 'updateInterval' | '60000\*60' | delay between refresing energy usage via the API, in milliseconds (1 hour, or 60 * 60 seconds) |
-| 'retryDelay' | '5000' | kWh values over this amount will be displayed in Red |
+| 'retryDelay' | '5000' | delay between failing to get a valid result from the API and trying again in milliseconds (5 seconds) |
 | 'animationSpeed' | '2000' | fade in/out speed in milliseconds (2 seconds) |
 
 ## Additional customisation
