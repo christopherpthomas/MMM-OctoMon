@@ -31,23 +31,24 @@ Module.register("MMM-OctoMon",{
                 var self = this;
                 var elecDataRequest=null;
                 var gasDataRequest=null;
-                var dataNotification=null;
 
                 this.elecLoaded=false;
                 this.gasLoaded=false;
 
-                this.getData();
+				this.getElecData(2);
+				this.getGasData(2);
+				
                 setInterval(function() {
-                        self.updateDom();
+						self.getElecData(2);
+						self.getGasData(2);
                 }, this.config.updateInterval);
 
         },
 
-        getData: function() {
-                Log.log("getData()");
+        getElecData: function(retries) {
+                Log.log("getElecData(retries=" + retries + ")");
 
                 var self = this;
-                var retry = true;
 
                 var hash = btoa(this.config.api_key + ":");
 
@@ -57,25 +58,39 @@ Module.register("MMM-OctoMon",{
                         elecDataRequest.open("GET", this.config.elecApiUrl, true);
                         elecDataRequest.setRequestHeader("Authorization","Basic " + hash);
                         elecDataRequest.onreadystatechange = function() {
-                                Log.log("readyState=" + this.readyState);
+                                Log.log("getElecData() readyState=" + this.readyState);
                                 if (this.readyState === 4) {
-                                        Log.log("status=" + this.status);
+                                        Log.log("getElecData() status=" + this.status);
                                         if (this.status === 200) {
                                                 self.processElecData(JSON.parse(this.response));
+												retries=0;
                                         } else if (this.status === 401) {
+												self.elecLoaded = false;
                                                 self.updateDom(self.config.animationSpeed);
-                                                Log.error(self.name, this.status);
-                                                retry = false;
+                                                Log.error(self.name, "getElecData() 401 error. status=" + this.status);
                                         } else {
-                                                Log.error(self.name, "Could not load data.");
-                                        }
-                                        if (retry) {
-                                                self.scheduleUpdate((self.elecLoaded) ? -1 : self.config.retryDelay);
+												self.elecLoaded = false;
+                                                self.updateDom(self.config.animationSpeed);
+                                                Log.error(self.name, "getElecData() Could not load data. status=" + this.status);
+										}
+										
+                                        if (retries>0) {
+												retries=retries-1;
+                                                self.scheduleElecRetry(retries);
                                         }
                                 }
                         };
                         elecDataRequest.send();
                 }
+
+        },
+
+        getGasData: function(retries) {
+                Log.log("getGasData(retries=" + retries + ")");
+
+                var self = this;
+
+                var hash = btoa(this.config.api_key + ":");
 
                 if(this.config.gasApiUrl!="")
                 {
@@ -83,20 +98,25 @@ Module.register("MMM-OctoMon",{
                         gasDataRequest.open("GET", this.config.gasApiUrl, true);
                         gasDataRequest.setRequestHeader("Authorization","Basic " + hash);
                         gasDataRequest.onreadystatechange = function() {
-                                Log.log("readyState=" + this.readyState);
+                                Log.log("getGasData() readyState=" + this.readyState);
                                 if (this.readyState === 4) {
-                                        Log.log("status=" + this.status);
+                                        Log.log("getGasData() status=" + this.status);
                                         if (this.status === 200) {
                                                 self.processGasData(JSON.parse(this.response));
+												retries=0;												
                                         } else if (this.status === 401) {
+												self.gasLoaded = false;
                                                 self.updateDom(self.config.animationSpeed);
-                                                Log.error(self.name, this.status);
-                                                retry = false;
+                                                Log.error(self.name, "getGasData() 401 error. " + this.status);
                                         } else {
-                                                Log.error(self.name, "Could not load data.");
-                                        }
-                                        if (retry) {
-                                                self.scheduleUpdate((self.gasLoaded) ? -1 : self.config.retryDelay);
+												self.gasLoaded = false;
+                                                self.updateDom(self.config.animationSpeed);
+                                                Log.error(self.name, "getGasData() Could not load data. status=" + this.status);
+										}
+										
+                                        if (retries>0) {
+												retries=retries-1;
+                                                self.scheduleGasRetry(retries);
                                         }
                                 }
                         };
@@ -104,20 +124,25 @@ Module.register("MMM-OctoMon",{
                 }
         },
 
-        scheduleUpdate: function(delay) {
-                var nextLoad = this.config.updateInterval;
-                if (typeof delay !== "undefined" && delay >= 0) {
-                        nextLoad = delay;
-                }
-                nextLoad = nextLoad ;
+        scheduleElecRetry: function(retries) {
+				Log.log("scheduleElecRetry() retries=" + retries);
                 var self = this;
                 setTimeout(function() {
-                        self.getData();
-                }, nextLoad);
+                        self.getElecData(retries);
+                }, self.config.retryDelay);
+        },
+
+        scheduleGasRetry: function(retries) {
+				Log.log("scheduleGasRetry() retries=" + retries);
+                var self = this;
+                setTimeout(function() {
+                        self.getGasData(retries);
+                }, self.config.retryDelay);
         },
 
         // Override dom generator.
         getDom: function() {
+				Log.log("getDom()");
 				var wrapper = document.createElement("div");
 
 				var errors = "";
@@ -268,8 +293,10 @@ Module.register("MMM-OctoMon",{
         },
 
         getHeader: function() {
+				var adate = new Date();
+				//Log.log("getHeader() " + adate.toLocaleTimeString());
+
 				if(this.config.showUpdateTime == true) {
-					var adate = new Date();
 					return this.data.header + " " + adate.toLocaleTimeString();
 				} else {
 					return this.data.header;
@@ -280,16 +307,16 @@ Module.register("MMM-OctoMon",{
                 Log.log("processElecData()");
                 var self = this;
                 this.elecDataRequest = data;
-                if (this.elecLoaded === false) { self.updateDom(self.config.animationSpeed) ; }
                 this.elecLoaded = true;
+                self.updateDom(self.config.animationSpeed);
         },
 
         processGasData: function(data) {
                 Log.log("processGasData()");
                 var self = this;
                 this.gasDataRequest = data;
-                if (this.gasLoaded === false) { self.updateDom(self.config.animationSpeed) ; }
                 this.gasLoaded = true;
+                self.updateDom(self.config.animationSpeed);
         },
 
 });
