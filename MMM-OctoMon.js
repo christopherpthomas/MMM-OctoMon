@@ -209,16 +209,25 @@ Module.register("MMM-OctoMon",{
 					if (this.elecDataRequest) {
 						if(typeof this.elecDataRequest.results[0] !== 'undefined') {
 							elecdate = new Date(this.elecDataRequest.results[0].interval_start);
-							if(elecdate<dteLoop)dteLoop=elecdate;
 						}
 					}
 					var gasdate;
 					if (this.gasDataRequest) {
 						if(typeof this.gasDataRequest.results[0] !== 'undefined') {
 							gasdate = new Date(this.gasDataRequest.results[0].interval_start);
-							if(gasdate<dteLoop)dteLoop=gasdate;
 						}
 					}
+					
+					//which is the closest date to today? start the loop there.
+					if(elecdate>=gasdate)
+					{
+						dteLoop=elecdate;
+					}
+					else
+					{
+						dteLoop=gasdate;
+					}				
+					
 				}
 
                 var strDays=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
