@@ -14,6 +14,12 @@
 ## Installation
 
 1. Clone this repo into `~/MagicMirror/modules` directory, to create `~/MagicMirror/modules/MMM-OctoMon`.
+
+```
+	cd ~/MagicMirror/modules
+	git clone https://github.com/christopherpthomas/MMM-OctoMon.git
+```
+
 1. Add OctoMon configuration into `~/MagicMirror/config/config.js`:
 
 ```
