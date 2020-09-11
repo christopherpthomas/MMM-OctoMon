@@ -37,7 +37,7 @@
 				gasMedium: 5,
 				gasHigh: 6,
 				decimalPlaces: 1,
-				showUpdateTime: true;
+				showUpdateTime: true,
 				updateInterval: 60000*60,
 				retryDelay: 5000,
 				animationSpeed: 2000,
