@@ -9,7 +9,7 @@
 ## Dependencies
 
 * An installation of [MagicMirror<sup>2</sup>](https://github.com/MichMich/MagicMirror)
-* An electricity and/or gas supply account with Octopus Energy
+* An electricity and/or gas supply account with Octopus Energy and a smart electricity meter
 
 ## Installation
 
