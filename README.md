@@ -34,8 +34,12 @@
 				displayDays: 7,
 				elecMedium: 10,
 				elecHigh: 20,
+				elecCostKWH: 0.1372,
+				elecCostSC: 0.25,
 				gasMedium: 5,
 				gasHigh: 6,
+				gasCostKWH: 0.0331,
+				gasCostSC: 0.168,				
 				decimalPlaces: 1,
 				showUpdateTime: true,
 				updateInterval: 60000*60,
@@ -57,8 +61,12 @@ The following config.js properties can be configured.
 | 'displayDays' | '7' | The number of days of historical energy usage to display |
 | 'elecMedium' | '10' | kWh values over this amount will be displayed in Orange |
 | 'elecHigh' | '20' | kWh values over this amount will be displayed in Red |
+| 'elecCostKWH' | '0.1372' | cost per kWh in pounds, or zero to hide display |
+| 'elecCostSC' | '0.25' | daily standing charge in pounds |
 | 'gasMedium' | '5' | kWh values over this amount will be displayed in Orange |
 | 'gasHigh' | '6' | kWh values over this amount will be displayed in Red |
+| 'gasCostKWH' | '0.0331' | cost per kWh in pounds, or zero to hide display |
+| 'gasCostSC' | '0.168' | daily standing charge in pounds |
 | 'decimalPlaces' | '1' | round all kWh values to this number of decimal places |
 | 'showUpdateTime' | 'true' | true or false, to display the time the energy usage figures were last updated |
 | 'updateInterval' | '60000\*60' | delay between refresing energy usage via the API, in milliseconds (1 hour, or 60 * 60 seconds) |
@@ -68,6 +76,10 @@ The following config.js properties can be configured.
 ## Additional customisation
 
 See comments in the main source code for a couple of other things that could be changed.
+
+## Note
+
+Cost calcuations are based on fixed daily rates. Octopus have tiered and variable pricing models (Octopus Go and Octopus Agile) which are not currently implemented. Turn the cost display off by setting the elecCostKWH or gasCostKWH to zero.
 
 ## Disclaimer
 

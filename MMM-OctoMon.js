@@ -17,8 +17,12 @@ Module.register("MMM-OctoMon",{
 		displayDays: 7,
 		elecMedium: 10,
 		elecHigh: 20,
+		elecCostKWH: 0.1372,
+		elecCostSC: 0.25,
 		gasMedium: 0.5,
 		gasHigh: 1,
+		gasCostKWH: 0.0331,
+		gasCostSC: 0.168,
 		decimalPlaces: 2,
 		showUpdateTime: true,
 		retryDelay: 5000,
@@ -256,7 +260,7 @@ Module.register("MMM-OctoMon",{
 			thisgaslabel.innerHTML = "---";
 			thisgaslabel.className = "small";
 			thisgaslabel.style.textAlign = "center";
-			
+
 			//we're looking for gas and elec results for this day
 			if (this.elecDataRequest) {
 				for(i=0;i<intDays;i++) {
@@ -269,8 +273,15 @@ Module.register("MMM-OctoMon",{
 							if(intVal>=this.config.elecMedium)strCol="color:orange";
 							if(intVal>=this.config.elecHigh)strCol="color:red";
 
-							thiseleclabel.innerHTML = "&nbsp;&nbsp;<span style=\"" + strCol + "\">" + intVal + " kWh</span>";
+							strUse = intVal + " kWh";
+							strCost="";
+							if(this.config.elecCostKWH>0)
+								strCost = "£" + (Math.round(((intVal * this.config.elecCostKWH)+this.config.elecCostSC) * 100)/100).toFixed(2);
+
+							//display electricity energy usage and cost here
+							thiseleclabel.innerHTML = "&nbsp;&nbsp;<span style=\"" + strCol + "\">" + strUse + " " + strCost + "</span>";
 							thiseleclabel.style.textAlign = "right";
+
 						}
 					}
 				}
@@ -287,8 +298,15 @@ Module.register("MMM-OctoMon",{
 							if(intVal>=this.config.gasMedium)strCol="color:orange";
 							if(intVal>=this.config.gasHigh)strCol="color:red";
 
-							thisgaslabel.innerHTML = "&nbsp;&nbsp;<span style=\"" + strCol + "\">" + intVal + " kWh</span>";									
+							strUse = intVal + " kWh";
+							strCost = "";
+							if(this.config.gasCostKWH>0)
+								strCost = "£" + (Math.round(((intVal * this.config.gasCostKWH)+this.config.gasCostSC) * 100)/100).toFixed(2);
+
+							//display gas energy usage and cost here
+							thisgaslabel.innerHTML = "&nbsp;&nbsp;<span style=\"" + strCol + "\">" + strUse + " " + strCost + "</span>";
 							thisgaslabel.style.textAlign = "right";
+
 						}
 					}
 				}
